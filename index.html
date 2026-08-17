@@ -1,1 +1,102 @@
-# Matem-tica-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Bhaskara</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .campo { margin-bottom: 10px; }
+    label { display: inline-block; width: 120px; }
+    button { margin-top: 10px; padding: 5px 15px; cursor: pointer; }
+    #resultado { margin-top: 15px; font-weight: bold; }
+    .erro { color: red; }
+    .sucesso { color: green; }
+  </style>
+</head>
+<body>
+
+  <h2>Calculadora de Equação do 2º Grau (Bhaskara)</h2>
+
+  <form id="formBhaskara">
+    <div class="campo">
+      <label for="coefA">Coeficiente a:</label>
+      <input type="text" id="coefA" placeholder="Ex: 1" required>
+    </div>
+    
+    <div class="campo">
+      <label for="coefB">Coeficiente b:</label>
+      <input type="text" id="coefB" placeholder="Ex: -5" required>
+    </div>
+    
+    <div class="campo">
+      <label for="coefC">Coeficiente c:</label>
+      <input type="text" id="coefC" placeholder="Ex: 6" required>
+    </div>
+
+    <button type="submit">Calcular</button>
+  </form>
+
+  <div id="resultado"></div>
+
+  <script>
+    document.getElementById("formBhaskara").addEventListener("submit", function (evento) {
+      // Impede o recarregamento da página ao enviar o formulário
+      evento.preventDefault();
+
+      const resultadoDiv = document.getElementById("resultado");
+      resultadoDiv.className = ""; // Limpa classes anteriores
+
+      try {
+        const entradaA = document.getElementById("coefA").value;
+        const entradaB = document.getElementById("coefB").value;
+        const entradaC = document.getElementById("coefC").value;
+
+        validarEntrada(entradaA, "a");
+        validarEntrada(entradaB, "b");
+        validarEntrada(entradaC, "c");
+
+        const a = Number(entradaA);
+        const b = Number(entradaB);
+        const c = Number(entradaC);
+
+        if (a === 0) {
+          throw new Error("O coeficiente 'a' não pode ser ZERO em uma equação do 2º grau.");
+        }
+
+        const delta = b ** 2 - (4 * a * c);
+        let mensagem = `<p>Equação: (${a})x² + (${b})x + (${c}) = 0</p>`;
+        mensagem += `<p>Delta (Δ) = ${delta}</p>`;
+
+        if (delta < 0) {
+          mensagem += "<p>A equação não possui raízes reais (Δ &lt; 0).</p>";
+        } else if (delta === 0) {
+          const x = (-b / (2 * a)) || 0; // || 0 evita o retorno de -0
+          mensagem += `<p>A equação possui uma única raiz real: x = ${x}</p>`;
+        } else {
+          const x1 = (-b + Math.sqrt(delta)) / (2 * a);
+          const x2 = (-b - Math.sqrt(delta)) / (2 * a);
+          mensagem += `<p>A equação possui duas raízes reais: x1 = ${x1} e x2 = ${x2}</p>`;
+        }
+
+        resultadoDiv.innerHTML = mensagem;
+        resultadoDiv.classList.add("sucesso");
+
+      } catch (erro) {
+        resultadoDiv.innerHTML = `[Erro de Validação]: ${erro.message}`;
+        resultadoDiv.classList.add("erro");
+      }
+    });
+
+    function validarEntrada(valor, nome) {
+      if (valor === null || valor.trim() === "") {
+        throw new Error(`A entrada do coeficiente '${nome}' não pode ser vazia.`);
+      }
+
+      if (isNaN(Number(valor))) {
+        throw new Error(`O coeficiente '${nome}' deve ser um número válido.`);
+      }
+    }
+  </script>
+
+</body>
+</html>
